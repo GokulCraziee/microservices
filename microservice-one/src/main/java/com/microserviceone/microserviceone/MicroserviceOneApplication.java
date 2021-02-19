@@ -9,11 +9,19 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 
 @SpringBootApplication
+// @EnableCircuitBreaker
 public class MicroserviceOneApplication {
 	
 	@Bean
 	@LoadBalanced
 	RestTemplate getRestTemplate() {
+		
+		//Timeout for recovering apiCall
+//		HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory
+//			= new HttpComponentsClientHttpRequestFactory();
+//		httpComponentsClientHttpRequestFactory.setConnectionRequestTimeout(3000);
+//		return new RestTemplate(httpComponentsClientHttpRequestFactory);
+		
 		return new RestTemplate();
 	}
 	
