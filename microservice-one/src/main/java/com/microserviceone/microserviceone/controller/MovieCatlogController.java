@@ -19,23 +19,26 @@ import com.microserviceone.microserviceone.bean.UserRating;
 public class MovieCatlogController {
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Autowired
 	private WebClient.Builder webClientbuilder;
-	
+
 	@RequestMapping("/{userId}")
-	public List<CatlogItem> getCatlog(@PathVariable("userId")	String userId){
-	//	RestTemplate restTemplate = new RestTemplate();
-	//	WebClient.Builder builder = WebClient.builder();
+	//@HystrixCommand(fallBackMethod = "getCatlogFallBack")
+	public List<CatlogItem> getCatlog(@PathVariable("userId") String userId) {
+		// RestTemplate restTemplate = new RestTemplate();
+		// WebClient.Builder builder = WebClient.builder();
 //		List<RatingData> ratingData = Arrays.asList(
 //				new RatingData("1", 4),
 //				new RatingData("2", 3));
-		
-		UserRating userRating = restTemplate.getForObject("http://microservice-three-rating-info/rating/users/"+userId, UserRating.class);
-		
-	return	userRating.getUserRating().stream().map(rating -> {
-		MovieItem movieItem = restTemplate.getForObject("http://microservice-two-movie-info/movie/"+rating.getMovieId(), MovieItem.class);
-		
+
+		UserRating userRating = restTemplate
+				.getForObject("http://microservice-three-rating-info/rating/users/" + userId, UserRating.class);
+
+		return userRating.getUserRating().stream().map(rating -> {
+			MovieItem movieItem = restTemplate
+					.getForObject("http://microservice-two-movie-info/movie/" + rating.getMovieId(), MovieItem.class);
+
 //		MovieItem movieItem = webClientbuilder.build()
 //				.get()
 //				.uri("http://localhost:8200/movie/"+rating.getMovieId())
@@ -43,12 +46,18 @@ public class MovieCatlogController {
 //				.bodyToMono(MovieItem.class)
 //				.block();
 //				
-				
+
 			return new CatlogItem(movieItem.getMovieName(), "good", rating.getRating());
-		})
-		.collect(Collectors.toList());
+		}).collect(Collectors.toList());
 		
+		
+
 //		return Collections.singletonList(new CatlogItem("gokul", "maara", 4));
 	}
+	
+//	public List<CatlogItem> getCatlogFallBack(@PathVariable("userId") String userId) {
+//		
+//		return Collections.singletonList(new CatlogItem("gokul", "maara", 4));return Collections.singletonList(new CatlogItem("gokul", "maara", 4));
+//	}
 
 }
